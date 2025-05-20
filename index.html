@@ -5,514 +5,362 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>To-Do List</title>
 <style>
+form input[type="text"],
+form input[type="date"] {
+  max-width: 650px; /* Adjust this width as needed */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(
+135deg,
+#667eea 0%,
+#7a82f7 50%,
+#764ba2 100%
+);
+  padding: 20px;
+  max-width: 700px;
+  margin: auto;
+  color: #333;
+}
+h1, h2, h3 {
+  text-align: center;
+  color: #000;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+  margin-bottom: 10px;
+}
+form {
+  background: #fff;
+  padding: 20px 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+form input, form select, form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 8px 0 16px;
+  border: 1.8px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+form button {
+  width: 100%;
+  padding: 14px;
+  background: #764ba2;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+section {
+  background: #fff;
+  padding: 20px 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+}
+.sort-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.sort-buttons button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #eee;
+  cursor: pointer;
+}
+.collapsible {
+  background-color: #492d6e;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+.active, .collapsible:hover {
+  background-color: #ddd;
+}
+.content {
+  padding: 10px 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #fff;
+  border-left: 3px solid #ccc;
+}
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+.task-info {
+  flex: 1;
+  margin-right: 10px;
+}
+.task-actions button {
+  margin-left: 6px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.edit-btn {
+  background-color: #f0ad4e;
+  color: white;
+}
+.save-btn {
+  background-color: #5cb85c;
+  color: white;
+}
+.cancel-btn {
+  background-color: #d9534f;
+  color: white;
+}
+@media (max-width: 768px) {
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    padding: 20px;
-    max-width: 700px;
-    margin: auto;
-    color: #333;
+    padding: 10px;
+    max-width: 100%;
   }
-  h1, h2, h3 {
-    text-align: center;
-    color: #000;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
-    margin-bottom: 10px;
+  form, section {
+    padding: 15px;
   }
-  h3 {
-    margin-top: 25px;
-    text-shadow: none;
-    color: #333;
-  }
-  form {
-    background: #fff;
-    padding: 20px 25px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    transition: box-shadow 0.3s ease;
-  }
-  form:hover {
-    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
-  }
-  form input, form select, form textarea {
-    width: 100%;
-    padding: 12px 15px;
-    margin: 8px 0 16px;
-    border: 1.8px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-  }
-  form input:focus, form select:focus, form textarea:focus {
-    outline: none;
-    border-color: #764ba2;
-    box-shadow: 0 0 5px #764ba2aa;
-  }
-  form button {
-    width: 100%;
-    padding: 14px;
-    background: #764ba2;
-    border: none;
-    color: white;
-    border-radius: 10px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  form button:hover {
-    background: #5b367c;
-  }
-  section {
-    background: #fff;
-    padding: 20px 25px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
-  }
-  ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  li {
-    background: #f9f9fb;
-    margin-bottom: 14px;
-    padding: 18px 22px;
-    border-radius: 14px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.07);
-    display: flex;
+  .task-item {
     flex-direction: column;
-    transition: background 0.3s ease;
-    color: black; /* Set pending tasks text color to black */
-  }
-  li:hover {
-    background: #eef1f9;
-  }
-  .task-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .task-title {
-    font-weight: 700;
-    font-size: 1.15rem;
-    margin-right: 15px;
-  }
-  .task-info {
-    font-size: 0.9rem;
-    color: #555;
-    font-style: italic;
-    white-space: nowrap;
-  }
-  .task-desc {
-    margin: 10px 0 12px;
-    color: #444;
-  }
-  .priority-High .task-title::before {
-    content: "🔴 ";
-  }
-  .priority-Medium .task-title::before {
-    content: "🟠 ";
-  }
-  .priority-Low .task-title::before {
-    content: "🟢 ";
-  }
-  .completed {
-    background: #f0f0f0; /* lighter background for completed tasks */
-    color: black !important; /* text color black for completed */
-  }
-  .completed .task-title {
-    text-decoration: line-through;
-    color: black !important;
+    align-items: flex-start;
   }
   .task-actions {
+    margin-top: 6px;
+    width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
+    gap: 6px;
   }
-  .task-actions button {
-    margin-left: 12px;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    box-shadow: 0 3px 7px rgba(0,0,0,0.1);
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
-  .task-actions button:hover {
-    transform: translateY(-2px);
-  }
-  .complete-btn {
-    background: #28a745;
-    color: white;
-  }
-  .complete-btn:hover {
-    background: #1e7e34;
-  }
-  .delete-btn {
-    background: #dc3545;
-    color: white;
-  }
-  .delete-btn:hover {
-    background: #a71d2a;
-  }
-  .edit-btn {
-    background: #ffc107;
-    color: #333;
-  }
-  .edit-btn:hover {
-    background: #cc9a06;
-  }
-  .due-soon {
-    color: #d9534f;
-    font-weight: 700;
-    margin-left: 10px;
-    font-size: 1.05rem;
-  }
-
-  /* Reminder popup style */
-  #reminder-popup {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    background: #d9534f;
-    color: white;
-    padding: 16px 22px;
-    border-radius: 14px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    font-weight: 600;
-    max-width: 320px;
-    z-index: 9999;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
-  }
-  #reminder-popup.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  #reminder-popup ul {
-    margin: 8px 0 0;
-    padding-left: 18px;
-    font-weight: normal;
-  }
-
-  /* Collapsible styles */
-  .collapsible-header {
-    background: #5a3d81;
-    color: white;
-    font-size: 1.3rem;
-    padding: 14px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    user-select: none;
-    margin-bottom: 12px;
-    box-shadow: 0 3px 7px rgba(0,0,0,0.15);
-  }
-  .collapsible-header:hover {
-    background: #4b336c;
-  }
-  .collapsible-content {
-    max-height: 1000px;
-    overflow: hidden;
-    transition: max-height 0.4s ease, padding 0.3s ease;
-    padding: 15px 20px;
-  }
-  .collapsible-content.collapsed {
-    max-height: 0;
-    padding: 0 20px;
-  }
-
-  /* Priority headers inside Pending */
-  .priority-header {
-    background: #5a3d81;
-    font-size: 1.1rem;
-    margin-top: 15px;
-    border-radius: 10px;
-    padding: 10px 16px;
-    cursor: pointer;
-    user-select: none;
-    color: white;
-  }
-  .priority-header:hover {
-    background: #4b336c;
-  }
-  .priority-content {
-    max-height: 1000px;
-    overflow: hidden;
-    transition: max-height 0.4s ease, padding 0.3s ease;
-    padding-left: 10px;
-  }
-  .priority-content.collapsed {
-    max-height: 0;
-    padding: 0 10px;
-  }
-
-  @media (max-width: 480px) {
-    body {
-      padding: 15px 10px;
-    }
-    form, section {
-      padding: 15px 20px;
-    }
-    .task-actions {
-      flex-wrap: wrap;
-    }
-    .task-actions button {
-      margin: 6px 6px 0 0;
-      flex: 1 1 100%;
-    }
-    #reminder-popup {
-      bottom: 15px;
-      right: 15px;
-      max-width: 90vw;
-    }
-  }
+}
 </style>
 </head>
 <body>
-
 <h1>To-Do List</h1>
 
-<form id="todo-form">
-  <input type="text" id="title" name="title" placeholder="Task title" required />
-  <textarea id="description" name="description" placeholder="Task description (optional)"></textarea>
-  <input type="datetime-local" id="due-date" name="due-date" required />
-  <select id="priority" name="priority" required>
-    <option value="" disabled selected>Priority Level</option>
-    <option value="High">High 🔴</option>
-    <option value="Medium">Medium 🟠</option>
-    <option value="Low">Low 🟢</option>
+<form id="task-form">
+  <input type="text" id="title" placeholder="Task Title" required />
+  <input type="date" id="dueDate" required />
+  <select id="priority">
+    <option value="High">High Priority</option>
+    <option value="Medium">Medium Priority</option>
+    <option value="Low">Low Priority</option>
   </select>
   <button type="submit">Add Task</button>
 </form>
 
-<section>
-  <div class="collapsible-header" id="pending-header">Pending Tasks ▼</div>
-  <div class="collapsible-content" id="pending-content">
+<div class="sort-buttons">
+  <button id="sort-title-btn">Sort by Title ⬍</button>
+  <button id="sort-date-btn">Sort by Date ⬍</button>
+</div>
 
-    <div class="priority-header" id="high-priority-header">High Priority ▼</div>
-    <div class="priority-content" id="pending-high-content">
-      <ul id="pending-high"></ul>
-    </div>
+<button class="collapsible">Pending Tasks</button>
+<div class="content">
+  <button class="collapsible">High Priority</button>
+  <div class="content" id="pending-high"></div>
 
-    <div class="priority-header" id="medium-priority-header">Medium Priority ▼</div>
-    <div class="priority-content" id="pending-medium-content">
-      <ul id="pending-medium"></ul>
-    </div>
+  <button class="collapsible">Medium Priority</button>
+  <div class="content" id="pending-medium"></div>
 
-    <div class="priority-header" id="low-priority-header">Low Priority ▼</div>
-    <div class="priority-content" id="pending-low-content">
-      <ul id="pending-low"></ul>
-    </div>
+  <button class="collapsible">Low Priority</button>
+  <div class="content" id="pending-low"></div>
+</div>
 
-  </div>
-</section>
-
-<section>
-  <div class="collapsible-header" id="completed-header">Completed Tasks ▼</div>
-  <div class="collapsible-content" id="completed-content">
-    <ul id="completed-tasks"></ul>
-  </div>
-</section>
-
-<!-- Reminder popup container -->
-<div id="reminder-popup"></div>
+<button class="collapsible">Completed Tasks</button>
+<div class="content" id="completed-list"></div>
 
 <script>
-  const form = document.getElementById('todo-form');
-  const pendingHigh = document.getElementById('pending-high');
-  const pendingMedium = document.getElementById('pending-medium');
-  const pendingLow = document.getElementById('pending-low');
-  const completedList = document.getElementById('completed-tasks');
-  const reminderPopup = document.getElementById('reminder-popup');
+let sortBy = null;
+let sortOrder = 1;
 
-  let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+const pendingHigh = document.getElementById('pending-high');
+const pendingMedium = document.getElementById('pending-medium');
+const pendingLow = document.getElementById('pending-low');
+const completedList = document.getElementById('completed-list');
 
-  function saveTasks() {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+let tasks = [
+  { title: "Buy groceries", dueDate: "2024-06-01", priority: "High", completed: false },
+  { title: "Finish project", dueDate: "2024-06-03", priority: "Medium", completed: false },
+  { title: "Clean house", dueDate: "2024-06-02", priority: "Low", completed: true }
+];
+
+function renderTasks() {
+  pendingHigh.innerHTML = '';
+  pendingMedium.innerHTML = '';
+  pendingLow.innerHTML = '';
+  completedList.innerHTML = '';
+
+  let sortedTasks = [...tasks];
+  if (sortBy === 'title') {
+    sortedTasks.sort((a, b) => a.title.localeCompare(b.title) * sortOrder);
+  } else if (sortBy === 'date') {
+    sortedTasks.sort((a, b) => (new Date(a.dueDate) - new Date(b.dueDate)) * sortOrder);
   }
 
-  function createTaskElement(task, index) {
-    const li = document.createElement('li');
-    li.classList.add(`priority-${task.priority}`);
-    if(task.completed) {
-      li.classList.add('completed');
-    }
+  sortedTasks.forEach((task, index) => {
+    const taskElement = document.createElement('div');
+    taskElement.className = 'task-item';
 
-    const header = document.createElement('div');
-    header.classList.add('task-header');
-
-    const title = document.createElement('span');
-    title.classList.add('task-title');
-    title.textContent = task.title;
-
-    // Reminder badge if due date within 1 hour and not completed
-    const now = new Date();
-    const dueDate = new Date(task.dueDate);
-    if (!task.completed && dueDate - now <= 3600000 && dueDate > now) {
-      const dueSoonBadge = document.createElement('span');
-      dueSoonBadge.classList.add('due-soon');
-      dueSoonBadge.textContent = '⚠️ Due Soon!';
-      title.appendChild(dueSoonBadge);
-    }
-
-    const due = document.createElement('span');
-    due.classList.add('task-info');
-    due.textContent = `Due: ${dueDate.toLocaleString()}`;
-
-    header.appendChild(title);
-    header.appendChild(due);
-
-    const desc = document.createElement('p');
-    desc.classList.add('task-desc');
-    desc.textContent = task.description;
-
-    const actions = document.createElement('div');
-    actions.classList.add('task-actions');
-
-    const completeBtn = document.createElement('button');
-    completeBtn.textContent = task.completed ? 'Undo' : 'Complete';
-    completeBtn.classList.add('complete-btn');
-    completeBtn.onclick = () => {
-      tasks[index].completed = !tasks[index].completed;
-      saveTasks();
-      renderTasks();
-      checkReminders();
-    };
-
-    const editBtn = document.createElement('button');
-    editBtn.textContent = 'Edit';
-    editBtn.classList.add('edit-btn');
-    editBtn.onclick = () => {
-      // Fill form with task data for editing
-      document.getElementById('title').value = task.title;
-      document.getElementById('description').value = task.description;
-      document.getElementById('due-date').value = task.dueDate;
-      document.getElementById('priority').value = task.priority;
-
-      // Remove the old task
-      tasks.splice(index, 1);
-      saveTasks();
-      renderTasks();
-    };
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Delete';
-    deleteBtn.classList.add('delete-btn');
-    deleteBtn.onclick = () => {
-      if(confirm('Are you sure you want to delete this task?')) {
-        tasks.splice(index, 1);
-        saveTasks();
-        renderTasks();
-        checkReminders();
-      }
-    };
-
-    actions.appendChild(completeBtn);
-    actions.appendChild(editBtn);
-    actions.appendChild(deleteBtn);
-
-    li.appendChild(header);
-    if(task.description.trim() !== '') li.appendChild(desc);
-    li.appendChild(actions);
-
-    return li;
-  }
-
-  function renderTasks() {
-    pendingHigh.innerHTML = '';
-    pendingMedium.innerHTML = '';
-    pendingLow.innerHTML = '';
-    completedList.innerHTML = '';
-
-    tasks.forEach((task, index) => {
-      const taskElement = createTaskElement(task, index);
-      if(task.completed) {
-        completedList.appendChild(taskElement);
-      } else {
-        if(task.priority === 'High') pendingHigh.appendChild(taskElement);
-        else if(task.priority === 'Medium') pendingMedium.appendChild(taskElement);
-        else if(task.priority === 'Low') pendingLow.appendChild(taskElement);
-      }
-    });
-  }
-
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const newTask = {
-      title: form.title.value.trim(),
-      description: form.description.value.trim(),
-      dueDate: form['due-date'].value,
-      priority: form.priority.value,
-      completed: false,
-    };
-    tasks.push(newTask);
-    saveTasks();
-    renderTasks();
-    form.reset();
-  });
-
-  // Collapsible for Pending and Completed sections
-  const pendingHeader = document.getElementById('pending-header');
-  const pendingContent = document.getElementById('pending-content');
-  const completedHeader = document.getElementById('completed-header');
-  const completedContent = document.getElementById('completed-content');
-
-  function toggleCollapsible(header, content) {
-    const collapsed = content.classList.toggle('collapsed');
-    header.textContent = collapsed
-      ? header.textContent.replace('▼', '▶')
-      : header.textContent.replace('▶', '▼');
-  }
-
-  pendingHeader.addEventListener('click', () => toggleCollapsible(pendingHeader, pendingContent));
-  completedHeader.addEventListener('click', () => toggleCollapsible(completedHeader, completedContent));
-
-  // Collapsible elements for priority inside pending
-  const highPriorityHeader = document.getElementById('high-priority-header');
-  const highPriorityContent = document.getElementById('pending-high-content');
-
-  const mediumPriorityHeader = document.getElementById('medium-priority-header');
-  const mediumPriorityContent = document.getElementById('pending-medium-content');
-
-  const lowPriorityHeader = document.getElementById('low-priority-header');
-  const lowPriorityContent = document.getElementById('pending-low-content');
-
-  highPriorityHeader.addEventListener('click', () => toggleCollapsible(highPriorityHeader, highPriorityContent));
-  mediumPriorityHeader.addEventListener('click', () => toggleCollapsible(mediumPriorityHeader, mediumPriorityContent));
-  lowPriorityHeader.addEventListener('click', () => toggleCollapsible(lowPriorityHeader, lowPriorityContent));
-
-  // Initially expanded
-  pendingContent.classList.remove('collapsed');
-  completedContent.classList.remove('collapsed');
-  highPriorityContent.classList.remove('collapsed');
-  mediumPriorityContent.classList.remove('collapsed');
-  lowPriorityContent.classList.remove('collapsed');
-
-  // Reminder popup logic
-  function checkReminders() {
-    const now = new Date();
-    const upcomingTasks = tasks.filter(t => !t.completed && new Date(t.dueDate) > now && new Date(t.dueDate) - now <= 3600000);
-
-    if(upcomingTasks.length > 0) {
-      reminderPopup.innerHTML = '<strong>Tasks Due Soon:</strong><ul>' +
-        upcomingTasks.map(t => `<li>${t.title} (Due: ${new Date(t.dueDate).toLocaleTimeString()})</li>`).join('') +
-        '</ul>';
-      reminderPopup.classList.add('show');
+    if (task.isEditing) {
+      // Editable fields
+      taskElement.innerHTML = `
+        <input type="text" class="edit-title" value="${task.title}" />
+        <input type="date" class="edit-dueDate" value="${task.dueDate}" />
+        <select class="edit-priority">
+          <option value="High" ${task.priority === 'High' ? 'selected' : ''}>High Priority</option>
+          <option value="Medium" ${task.priority === 'Medium' ? 'selected' : ''}>Medium Priority</option>
+          <option value="Low" ${task.priority === 'Low' ? 'selected' : ''}>Low Priority</option>
+        </select>
+        <div class="task-actions">
+          <button class="save-btn">Save</button>
+          <button class="cancel-btn">Cancel</button>
+        </div>
+      `;
     } else {
-      reminderPopup.classList.remove('show');
+      // Normal display
+      const markButton = task.completed
+  ? '<button class="mark-incomplete-btn">Mark Incomplete</button>'
+  : '<button class="mark-complete-btn">Mark Complete</button>';
+
+taskElement.innerHTML = `
+  <div class="task-info">${task.title} (${task.dueDate})</div>
+  <div class="task-actions">
+    <button class="edit-btn">Edit</button>
+    ${markButton}
+    <button class="delete-btn">Delete</button>
+  </div>
+`;
+
+
     }
+
+    // Append to correct container
+  if (!task.completed) {
+  const completeBtn = taskElement.querySelector('.mark-complete-btn');
+  completeBtn.addEventListener('click', () => {
+    tasks[index].completed = true;
+    renderTasks();
+  });
+} else {
+  const incompleteBtn = taskElement.querySelector('.mark-incomplete-btn');
+  incompleteBtn.addEventListener('click', () => {
+    tasks[index].completed = false;
+    renderTasks();
+  });
+}
+
+    // Add event listeners for edit, save, cancel buttons
+    if (task.isEditing) {
+      const saveBtn = taskElement.querySelector('.save-btn');
+      const cancelBtn = taskElement.querySelector('.cancel-btn');
+
+      saveBtn.addEventListener('click', () => {
+        const newTitle = taskElement.querySelector('.edit-title').value.trim();
+        const newDueDate = taskElement.querySelector('.edit-dueDate').value;
+        const newPriority = taskElement.querySelector('.edit-priority').value;
+
+        if(newTitle && newDueDate && newPriority) {
+          tasks[index].title = newTitle;
+          tasks[index].dueDate = newDueDate;
+          tasks[index].priority = newPriority;
+          tasks[index].isEditing = false;
+          renderTasks();
+        } else {
+          alert('Please fill all fields to save the task.');
+        }
+      });
+
+      cancelBtn.addEventListener('click', () => {
+        tasks[index].isEditing = false;
+        renderTasks();
+      });
+    } else {
+      const editBtn = taskElement.querySelector('.edit-btn');
+      editBtn.addEventListener('click', () => {
+        tasks[index].isEditing = true;
+        renderTasks();
+      });
+      
+if (!task.completed) {
+  if (task.priority === "High") {
+    pendingHigh.appendChild(taskElement);
+  } else if (task.priority === "Medium") {
+    pendingMedium.appendChild(taskElement);
+  } else if (task.priority === "Low") {
+    pendingLow.appendChild(taskElement);
   }
+} else {
+  completedList.appendChild(taskElement);
+}
 
-  setInterval(checkReminders, 60000); // check every minute
-
-  // Initial render and reminder check
+      
+      const deleteBtn = taskElement.querySelector('.delete-btn');
+deleteBtn.addEventListener('click', () => {
+  tasks.splice(index, 1);
   renderTasks();
-  checkReminders();
-</script>
+});
 
+    }
+  });
+}
+
+document.getElementById('sort-title-btn').addEventListener('click', () => {
+  sortBy = 'title';
+  sortOrder *= -1;
+  renderTasks();
+});
+document.getElementById('sort-date-btn').addEventListener('click', () => {
+  sortBy = 'date';
+  sortOrder *= -1;
+  renderTasks();
+});
+
+document.getElementById('task-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const title = document.getElementById('title').value.trim();
+  const dueDate = document.getElementById('dueDate').value;
+  const priority = document.getElementById('priority').value;
+  if (title && dueDate && priority) {
+    tasks.push({ title, dueDate, priority, completed: false });
+    this.reset();
+    renderTasks();
+  }
+});
+
+const collapsibles = document.getElementsByClassName("collapsible");
+for (let i = 0; i < collapsibles.length; i++) {
+  collapsibles[i].addEventListener("click", function () {
+    this.classList.toggle("active");
+    const content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+
+renderTasks();
+</script>
 </body>
-</html>
+</html>  
