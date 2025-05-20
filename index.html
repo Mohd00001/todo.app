@@ -187,7 +187,17 @@ section {
 </div>
 
 <button class="collapsible">Completed Tasks</button>
-<div class="content" id="completed-list"></div>
+<div class="content">
+  <button class="collapsible">High Priority</button>
+  <div class="content" id="completed-high"></div>
+
+  <button class="collapsible">Medium Priority</button>
+  <div class="content" id="completed-medium"></div>
+
+  <button class="collapsible">Low Priority</button>
+  <div class="content" id="completed-low"></div>
+</div>
+
 
 <script>
 let sortBy = null;
@@ -196,7 +206,10 @@ let sortOrder = 1;
 const pendingHigh = document.getElementById('pending-high');
 const pendingMedium = document.getElementById('pending-medium');
 const pendingLow = document.getElementById('pending-low');
-const completedList = document.getElementById('completed-list');
+const completedHigh = document.getElementById('completed-high');
+const completedMedium = document.getElementById('completed-medium');
+const completedLow = document.getElementById('completed-low');
+
 
 let tasks = [
   { title: "Buy groceries", dueDate: "2024-06-01", priority: "High", completed: false },
@@ -208,7 +221,10 @@ function renderTasks() {
   pendingHigh.innerHTML = '';
   pendingMedium.innerHTML = '';
   pendingLow.innerHTML = '';
-  completedList.innerHTML = '';
+ completedHigh.innerHTML = '';
+completedMedium.innerHTML = '';
+completedLow.innerHTML = '';
+
 
   let sortedTasks = [...tasks];
   if (sortBy === 'title') {
@@ -302,16 +318,17 @@ taskElement.innerHTML = `
       });
       
 if (!task.completed) {
-  if (task.priority === "High") {
-    pendingHigh.appendChild(taskElement);
-  } else if (task.priority === "Medium") {
-    pendingMedium.appendChild(taskElement);
-  } else if (task.priority === "Low") {
-    pendingLow.appendChild(taskElement);
-  }
+  // Append to pending priority containers (already done)
+  if (task.priority === 'High') pendingHigh.appendChild(taskElement);
+  else if (task.priority === 'Medium') pendingMedium.appendChild(taskElement);
+  else pendingLow.appendChild(taskElement);
 } else {
-  completedList.appendChild(taskElement);
+  // Append to completed priority containers (new)
+  if (task.priority === 'High') completedHigh.appendChild(taskElement);
+  else if (task.priority === 'Medium') completedMedium.appendChild(taskElement);
+  else completedLow.appendChild(taskElement);
 }
+
 
       
       const deleteBtn = taskElement.querySelector('.delete-btn');
