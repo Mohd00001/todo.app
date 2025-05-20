@@ -238,120 +238,119 @@ completedLow.innerHTML = '';
     sortedTasks.sort((a, b) => (new Date(a.dueDate) - new Date(b.dueDate)) * sortOrder);
   }
 
-  sortedTasks.forEach((task, index) => {
-    const taskElement = document.createElement('div');
-    taskElement.className = 'task-item';
+ sortedTasks.forEach((task, index) => {
+  const taskElement = document.createElement('div');
+  taskElement.className = 'task-item';
 
-    if (task.isEditing) {
-      // Editable fields
-      taskElement.innerHTML = `
-        <input type="text" class="edit-title" value="${task.title}" />
-        <input type="date" class="edit-dueDate" value="${task.dueDate}" />
-        <select class="edit-priority">
-          <option value="High" ${task.priority === 'High' ? 'selected' : ''}>High Priority</option>
-          <option value="Medium" ${task.priority === 'Medium' ? 'selected' : ''}>Medium Priority</option>
-          <option value="Low" ${task.priority === 'Low' ? 'selected' : ''}>Low Priority</option>
-        </select>
-        <div class="task-actions">
-          <button class="save-btn">Save</button>
-          <button class="cancel-btn">Cancel</button>
-        </div>
-      `;
-    } else {
-      // Normal display
-      const markButton = task.completed
-  ? '<button class="mark-incomplete-btn">Mark Incomplete</button>'
-  : '<button class="mark-complete-btn">Mark Complete</button>';
+  if (task.isEditing) {
+    // Show inputs for editing
+    taskElement.innerHTML = `
+      <input type="text" class="edit-title" value="${task.title}" />
+      <input type="date" class="edit-dueDate" value="${task.dueDate}" />
+      <select class="edit-priority">
+        <option value="High" ${task.priority === 'High' ? 'selected' : ''}>High Priority</option>
+        <option value="Medium" ${task.priority === 'Medium' ? 'selected' : ''}>Medium Priority</option>
+        <option value="Low" ${task.priority === 'Low' ? 'selected' : ''}>Low Priority</option>
+      </select>
+      <div class="task-actions">
+        <button class="save-btn">Save</button>
+        <button class="cancel-btn">Cancel</button>
+      </div>
+    `;
+  } else {
+    // Show normal task display
+    const markButton = task.completed
+      ? '<button class="mark-incomplete-btn">Mark Incomplete</button>'
+      : '<button class="mark-complete-btn">Mark Complete</button>';
 
-taskElement.innerHTML = `
-  <div class="task-info">${task.title} (${task.dueDate})</div>
-  <div class="task-actions">
-    <button class="edit-btn">Edit</button>
-    ${markButton}
-    <button class="delete-btn">Delete</button>
-  </div>
-`;
+    taskElement.innerHTML = `
+      <div class="task-info">${task.title} (${task.dueDate})</div>
+      <div class="task-actions">
+        <button class="edit-btn">Edit</button>
+        ${markButton}
+        <button class="delete-btn">Delete</button>
+      </div>
+    `;
+  }
 
-
-    }
-
-    // Append to correct container
+  // Append the task element to the correct container, no matter edit mode or not
   if (!task.completed) {
-  const completeBtn = taskElement.querySelector('.mark-complete-btn');
-  completeBtn.addEventListener('click', () => {
-    tasks[index].completed = true;
-saveTasks();
-renderTasks();
+    if (task.priority === 'High') pendingHigh.appendChild(taskElement);
+    else if (task.priority === 'Medium') pendingMedium.appendChild(taskElement);
+    else pendingLow.appendChild(taskElement);
+  } else {
+    if (task.priority === 'High') completedHigh.appendChild(taskElement);
+    else if (task.priority === 'Medium') completedMedium.appendChild(taskElement);
+    else completedLow.appendChild(taskElement);
+  }
 
-  });
-} else {
-  const incompleteBtn = taskElement.querySelector('.mark-incomplete-btn');
-  incompleteBtn.addEventListener('click', () => {
-    tasks[index].completed = false;
-saveTasks();
-renderTasks();
+  // Add event listeners
+  if (task.isEditing) {
+    const saveBtn = taskElement.querySelector('.save-btn');
+    const cancelBtn = taskElement.querySelector('.cancel-btn');
 
-  });
-}
+    saveBtn.addEventListener('click', () => {
+      const newTitle = taskElement.querySelector('.edit-title').value.trim();
+      const newDueDate = taskElement.querySelector('.edit-dueDate').value;
+      const newPriority = taskElement.querySelector('.edit-priority').value;
 
-    // Add event listeners for edit, save, cancel buttons
-    if (task.isEditing) {
-      const saveBtn = taskElement.querySelector('.save-btn');
-      const cancelBtn = taskElement.querySelector('.cancel-btn');
-
-      saveBtn.addEventListener('click', () => {
-        const newTitle = taskElement.querySelector('.edit-title').value.trim();
-        const newDueDate = taskElement.querySelector('.edit-dueDate').value;
-        const newPriority = taskElement.querySelector('.edit-priority').value;
-
-        if(newTitle && newDueDate && newPriority) {
-          tasks[index].title = newTitle;
-tasks[index].dueDate = newDueDate;
-tasks[index].priority = newPriority;
-tasks[index].isEditing = false;
-saveTasks();
-renderTasks();
-
-        } else {
-          alert('Please fill all fields to save the task.');
-        }
-      });
-
-      cancelBtn.addEventListener('click', () => {
+      if(newTitle && newDueDate && newPriority) {
+        tasks[index].title = newTitle;
+        tasks[index].dueDate = newDueDate;
+        tasks[index].priority = newPriority;
         tasks[index].isEditing = false;
+        saveTasks();
         renderTasks();
-      });
-    } else {
-      const editBtn = taskElement.querySelector('.edit-btn');
+      } else {
+        alert('Please fill all fields to save the task.');
+      }
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      tasks[index].isEditing = false;
+      renderTasks();
+    });
+
+  } else {
+    const editBtn = taskElement.querySelector('.edit-btn');
+    if(editBtn) {
       editBtn.addEventListener('click', () => {
         tasks[index].isEditing = true;
         renderTasks();
       });
-      
-if (!task.completed) {
-  // Append to pending priority containers (already done)
-  if (task.priority === 'High') pendingHigh.appendChild(taskElement);
-  else if (task.priority === 'Medium') pendingMedium.appendChild(taskElement);
-  else pendingLow.appendChild(taskElement);
-} else {
-  // Append to completed priority containers (new)
-  if (task.priority === 'High') completedHigh.appendChild(taskElement);
-  else if (task.priority === 'Medium') completedMedium.appendChild(taskElement);
-  else completedLow.appendChild(taskElement);
-}
+    }
 
+    if (!task.completed) {
+      const completeBtn = taskElement.querySelector('.mark-complete-btn');
+      if(completeBtn) {
+        completeBtn.addEventListener('click', () => {
+          tasks[index].completed = true;
+          saveTasks();
+          renderTasks();
+        });
+      }
+    } else {
+      const incompleteBtn = taskElement.querySelector('.mark-incomplete-btn');
+      if(incompleteBtn) {
+        incompleteBtn.addEventListener('click', () => {
+          tasks[index].completed = false;
+          saveTasks();
+          renderTasks();
+        });
+      }
+    }
 
-      
-      const deleteBtn = taskElement.querySelector('.delete-btn');
-deleteBtn.addEventListener('click', () => {
- tasks.splice(index, 1);
-saveTasks();
-renderTasks();
-
+    const deleteBtn = taskElement.querySelector('.delete-btn');
+    if(deleteBtn) {
+      deleteBtn.addEventListener('click', () => {
+        tasks.splice(index, 1);
+        saveTasks();
+        renderTasks();
+      });
+    }
+  }
 });
 
-    }
-  });
 }
 
 document.getElementById('sort-title-btn').addEventListener('click', () => {
