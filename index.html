@@ -198,14 +198,10 @@ section {
   <div class="content" id="completed-low"></div>
 </div>
 
-  
+
 <script>
-let sortBy = null; 
+let sortBy = null;
 let sortOrder = 1;
-  
-function saveTasks() {
-  localStorage.setItem('tasks', JSON.stringify(tasks));
-}
 
 const pendingHigh = document.getElementById('pending-high');
 const pendingMedium = document.getElementById('pending-medium');
@@ -213,19 +209,16 @@ const pendingLow = document.getElementById('pending-low');
 const completedHigh = document.getElementById('completed-high');
 const completedMedium = document.getElementById('completed-medium');
 const completedLow = document.getElementById('completed-low');
- 
 
-let tasks = [];
 
-const saved = localStorage.getItem('tasks');
-if (saved) {
-  tasks = JSON.parse(saved);
-} else {
-  tasks = [
-    { title: "Buy groceries", dueDate: "2024-06-01", priority: "High", completed: false },
-    { title: "Finish project", dueDate: "2024-06-03", priority: "Medium", completed: false },
-    { title: "Clean house", dueDate: "2024-06-02", priority: "Low", completed: true }
-  ];
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [
+  { title: "Buy groceries", dueDate: "2024-06-01", priority: "High", completed: false },
+  { title: "Finish project", dueDate: "2024-06-03", priority: "Medium", completed: false },
+  { title: "Clean house", dueDate: "2024-06-02", priority: "Low", completed: true }
+];
+
+  function saveTasks() {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
 
@@ -287,13 +280,17 @@ taskElement.innerHTML = `
   const completeBtn = taskElement.querySelector('.mark-complete-btn');
   completeBtn.addEventListener('click', () => {
     tasks[index].completed = true;
-    renderTasks();
+saveTasks();
+renderTasks();
+
   });
 } else {
   const incompleteBtn = taskElement.querySelector('.mark-incomplete-btn');
   incompleteBtn.addEventListener('click', () => {
     tasks[index].completed = false;
-    renderTasks();
+saveTasks();
+renderTasks();
+
   });
 }
 
@@ -305,22 +302,23 @@ taskElement.innerHTML = `
       saveBtn.addEventListener('click', () => {
         const newTitle = taskElement.querySelector('.edit-title').value.trim();
         const newDueDate = taskElement.querySelector('.edit-dueDate').value;
-        const newPriority = taskElement.querySelector('.edit-priority').value; 
+        const newPriority = taskElement.querySelector('.edit-priority').value;
 
         if(newTitle && newDueDate && newPriority) {
           tasks[index].title = newTitle;
-          tasks[index].dueDate = newDueDate; 
-          tasks[index].priority = newPriority;
-          tasks[index].isEditing = false;
-          renderTasks();
+tasks[index].dueDate = newDueDate;
+tasks[index].priority = newPriority;
+tasks[index].isEditing = false;
+saveTasks();
+renderTasks();
+
         } else {
           alert('Please fill all fields to save the task.');
         }
       });
 
       cancelBtn.addEventListener('click', () => {
-        tasks[index].isEditing = true;
-        saveTasks();
+        tasks[index].isEditing = false;
         renderTasks();
       });
     } else {
@@ -346,8 +344,10 @@ if (!task.completed) {
       
       const deleteBtn = taskElement.querySelector('.delete-btn');
 deleteBtn.addEventListener('click', () => {
-  tasks.splice(index, 1);
-  renderTasks();
+ tasks.splice(index, 1);
+saveTasks();
+renderTasks();
+
 });
 
     }
@@ -361,7 +361,7 @@ document.getElementById('sort-title-btn').addEventListener('click', () => {
 });
 document.getElementById('sort-date-btn').addEventListener('click', () => {
   sortBy = 'date';
-  sortOrder *= -1;
+  sortOrder *= -1; 
   renderTasks();
 });
 
@@ -371,8 +371,8 @@ document.getElementById('task-form').addEventListener('submit', function(e) {
   const dueDate = document.getElementById('dueDate').value;
   const priority = document.getElementById('priority').value;
   if (title && dueDate && priority) {
-   tasks.push({ title, dueDate, priority, completed: false });
-saveTasks(); 
+    tasks.push({ title, dueDate, priority, completed: false });
+saveTasks();
 this.reset();
 renderTasks();
 
