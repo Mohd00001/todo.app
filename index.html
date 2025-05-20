@@ -198,10 +198,14 @@ section {
   <div class="content" id="completed-low"></div>
 </div>
 
-
+  
 <script>
-let sortBy = null;
+let sortBy = null; 
 let sortOrder = 1;
+  
+function saveTasks() {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
 
 const pendingHigh = document.getElementById('pending-high');
 const pendingMedium = document.getElementById('pending-medium');
@@ -209,13 +213,21 @@ const pendingLow = document.getElementById('pending-low');
 const completedHigh = document.getElementById('completed-high');
 const completedMedium = document.getElementById('completed-medium');
 const completedLow = document.getElementById('completed-low');
+ 
 
+let tasks = [];
 
-let tasks = [
-  { title: "Buy groceries", dueDate: "2024-06-01", priority: "High", completed: false },
-  { title: "Finish project", dueDate: "2024-06-03", priority: "Medium", completed: false },
-  { title: "Clean house", dueDate: "2024-06-02", priority: "Low", completed: true }
-];
+const saved = localStorage.getItem('tasks');
+if (saved) {
+  tasks = JSON.parse(saved);
+} else {
+  tasks = [
+    { title: "Buy groceries", dueDate: "2024-06-01", priority: "High", completed: false },
+    { title: "Finish project", dueDate: "2024-06-03", priority: "Medium", completed: false },
+    { title: "Clean house", dueDate: "2024-06-02", priority: "Low", completed: true }
+  ];
+}
+
 
 function renderTasks() {
   pendingHigh.innerHTML = '';
@@ -293,11 +305,11 @@ taskElement.innerHTML = `
       saveBtn.addEventListener('click', () => {
         const newTitle = taskElement.querySelector('.edit-title').value.trim();
         const newDueDate = taskElement.querySelector('.edit-dueDate').value;
-        const newPriority = taskElement.querySelector('.edit-priority').value;
+        const newPriority = taskElement.querySelector('.edit-priority').value; 
 
         if(newTitle && newDueDate && newPriority) {
           tasks[index].title = newTitle;
-          tasks[index].dueDate = newDueDate;
+          tasks[index].dueDate = newDueDate; 
           tasks[index].priority = newPriority;
           tasks[index].isEditing = false;
           renderTasks();
@@ -307,7 +319,8 @@ taskElement.innerHTML = `
       });
 
       cancelBtn.addEventListener('click', () => {
-        tasks[index].isEditing = false;
+        tasks[index].isEditing = true;
+        saveTasks();
         renderTasks();
       });
     } else {
@@ -358,9 +371,11 @@ document.getElementById('task-form').addEventListener('submit', function(e) {
   const dueDate = document.getElementById('dueDate').value;
   const priority = document.getElementById('priority').value;
   if (title && dueDate && priority) {
-    tasks.push({ title, dueDate, priority, completed: false });
-    this.reset();
-    renderTasks();
+   tasks.push({ title, dueDate, priority, completed: false });
+saveTasks(); 
+this.reset();
+renderTasks();
+
   }
 });
 
